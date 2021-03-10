@@ -1,0 +1,4 @@
+PyYAML==5.3
+GitPython==2.1.14
+git-url-parse==1.2.2
+configparser==4.0.2

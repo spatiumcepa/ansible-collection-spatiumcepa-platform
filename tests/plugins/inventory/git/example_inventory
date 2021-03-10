@@ -1,0 +1,85 @@
+# example common include_test host groups and variables
+# inherited by example hosts
+# with a few more levels
+# note that kubernetes_master host 10.20.1.8 is defined only in include.test.yml
+# but both it and 10.20.1.7 get the kubernetes_master variables included by the host group definition
+
+[include_test:children]
+example
+
+[example:children]
+kubernetes
+other_static_host
+
+[kubernetes:children]
+kubernetes_master
+kubernetes_agent
+
+[kubernetes_master]
+10.20.1.7
+
+[kubernetes_agent]
+10.20.1.19
+
+[other_static_host]
+10.50.4.21
+
+# validate this by running this plugin with ansible-inventory a la
+#
+# cd ~/src/ansible-collection-spatiumcepa-platform
+# ANSIBLE_INVENTORY_PLUGINS=plugins/inventory ANSIBLE_INVENTORY_ENABLED=git,ini ANSIBLE_INVENTORY_ANY_UNPARSED_IS_FAILED=true ansible-inventory -vvv -i tests/plugins/inventory/git --list --yaml
+#
+# and you should get this inventory yaml output:
+#
+# all:
+#   children:
+#     include_test:
+#       children:
+#         abstract_test:
+#           children:
+#             db:
+#               children:
+#                 primary_db:
+#                   children:
+#                     db1: {}
+#                 replica_db:
+#                   children:
+#                     db2: {}
+#             web:
+#               children:
+#                 web1: {}
+#                 web2: {}
+#         example:
+#           children:
+#             kubernetes:
+#               children:
+#                 kubernetes_agent:
+#                   hosts:
+#                     10.20.1.19:
+#                       customer_name: nkiraly
+#                       include_var_one: 1
+#                       include_var_two: 2.0
+#                 kubernetes_master:
+#                   hosts:
+#                     10.20.1.7:
+#                       customer_name: nkiraly
+#                       include_var_one: 1
+#                       include_var_two: 2.0
+#                       node_is_kubernetes_master: true
+#                     10.20.1.8:
+#                       customer_name: nkiraly
+#                       include_var_one: 1
+#                       include_var_two: 2.0
+#                       master_aig_trace: true
+#                       node_is_kubernetes_master: true
+#             other_static_host:
+#               hosts:
+#                 10.50.4.21:
+#                   customer_name: nkiraly
+#                   include_var_one: 1
+#                   include_var_two: 2.0
+#         kubernetes_master:
+#           hosts:
+#             10.20.1.7: {}
+#             10.20.1.8: {}
+#     ungrouped: {}

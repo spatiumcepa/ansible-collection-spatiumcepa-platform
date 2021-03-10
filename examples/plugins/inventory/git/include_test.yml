@@ -1,0 +1,17 @@
+---
+include_vars:
+  - include_vars.yml
+
+includes:
+  - abstract_test.yml
+
+vars:
+  customer_name: nkiraly
+
+kubernetes_master:
+  include_vars:
+    - kubernetes_master.yml
+  "10.20.1.8":
+    _aig_type: host
+    vars:
+      master_aig_trace: True

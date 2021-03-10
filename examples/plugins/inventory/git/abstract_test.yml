@@ -1,0 +1,21 @@
+---
+vars:
+  var001customer: beep
+
+web:
+  vars:
+    var002web: bim
+  web1:
+    vars:
+      var003web1: bap
+  web2:
+
+db:
+  vars:
+    var004db: slo
+  primary_db:
+    db1:
+  replica_db:
+    db2:
+      vars:
+        var005db2: mo

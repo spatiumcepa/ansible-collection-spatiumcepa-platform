@@ -1,0 +1,6 @@
+---
+plugin: git
+# some versions of ansible may need this to be
+# plugin: spatiumcepa.platform.git
+
+file_path: examples/plugins/inventory/git/include_test.yml
