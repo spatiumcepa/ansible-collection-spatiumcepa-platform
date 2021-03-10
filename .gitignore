@@ -15,7 +15,7 @@ logs/*
 
 # Editor / Project files
 *.orig
-*.swp
+*.sw*
 .idea/
 .vscode/
 .DS_Store
