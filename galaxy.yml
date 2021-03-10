@@ -9,4 +9,4 @@ license:
   - "BSD-2-Clause"
 tags:
   - platform
-repository: "https://github.com/spatium-cepa/ansible-collection-spatium-cepa-platform"
+repository: "https://github.com/spatium-cepa/ansible-collection-spatiumcepa-platform"
