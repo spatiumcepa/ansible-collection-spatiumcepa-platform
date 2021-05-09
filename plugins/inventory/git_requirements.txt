@@ -1,4 +1,5 @@
 PyYAML>=5.3
+gitdb2>=2.0.0,<3
 GitPython==2.1
 git-url-parse==1.2
 configparser>=4.0
