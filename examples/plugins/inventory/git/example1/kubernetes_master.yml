@@ -1,0 +1,3 @@
+---
+# these vars are included for kubernetes_master host group members
+kubernetes_master_node: True

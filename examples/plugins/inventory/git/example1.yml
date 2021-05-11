@@ -1,0 +1,28 @@
+---
+include_vars:
+  - example1/common_vars.yml
+
+# include abstract1 git based inventory definition in this definition
+includes:
+  - abstract1.yml
+
+# variables that should be present for all hosts in the include_test group
+# and all of it's child host groups
+vars:
+  customer_name: nkiraly
+
+kubernetes:
+  # all hosts in kubernetes_master group get variables in these files
+  include_vars:
+    - example1/kubernetes.yml
+  # all hosts in this group get variable indicating they are a kubernetes cluster node
+
+kubernetes_master:
+  # all hosts in kubernetes_master group get variables in these files
+  include_vars:
+    - example1/kubernetes_master.yml
+  # can define hosts in host group blocks with _aig_type host
+  "10.20.1.8":
+    _aig_type: host
+    vars:
+      master_10_20_1_8_only_var: tracey

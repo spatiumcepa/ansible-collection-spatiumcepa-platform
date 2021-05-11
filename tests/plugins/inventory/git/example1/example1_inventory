@@ -1,0 +1,29 @@
+# example common include_test host groups and variables
+# inherited by example hosts
+# with a few more levels
+# note that kubernetes_master host 10.20.1.8 is defined only in include.test.yml
+# but both it and 10.20.1.7 get the kubernetes_master variables included by the host group definition
+
+[example1:children]
+datacenter1
+
+[datacenter1:children]
+kubernetes
+other_static_host
+
+[kubernetes:children]
+kubernetes_master
+kubernetes_agent
+
+[kubernetes_master]
+10.20.1.7
+
+[kubernetes_agent]
+10.20.1.19
+
+[other_static_host]
+10.50.4.21
+
+# this static host is a part of datacenter1 and gets its vars, but has a special variable defined here
+[other_static_host:vars]
+special_var=135711131719

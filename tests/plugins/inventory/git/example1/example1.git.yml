@@ -1,0 +1,4 @@
+---
+plugin: spatiumcepa.platform.git
+
+file_path: examples/plugins/inventory/git/example1.yml

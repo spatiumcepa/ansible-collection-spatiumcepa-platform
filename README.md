@@ -5,6 +5,7 @@ This repo contains the `spatiumcepa.platform` Ansible Collection which includes 
 ## Usage
 
 Specify the collection in your ansible requirements a la
+
 ```yaml
 roles: []
 
@@ -37,113 +38,114 @@ $ ansible-inventory -vvv --list
 ansible_collections.spatiumcepa.platform.plugins.inventory.git declined parsing /etc/ansible/hosts as it did not pass its verify_file() method
 ```
 
-Read test inventory that loads repository examples
+Read abstract inventory example
 
 ```sh
-export ANSIBLE_INVENTORY_ENABLED="spatiumcepa.platform.git,ini,host_list,script"
-ansible-inventory -vvv -i tests/plugins/inventory/git --graph --vars
+ansible-inventory -vvv -i tests/plugins/inventory/git/abstract1 --graph --vars
 ```
 
-Example inventory shell output
+Read test example1 inventory directory that defines static hosts and loads example1 variable and host definition which includes an inline vaulted variable
+And use debug module to list hostvars while limited to the kubernetes_master host group, of which host .8 is only defined in the example1 inventory yaml includes
+
 ```sh
-(cloud-platform-management-sy5ngW6F) nkiraly@galp5-lxw:~/src/spatium-cepa/ansible-collection-spatiumcepa-platform$ ansible-inventory -vvv -i tests/plugins/inventory/git --graph --vars
+# specify vault-id for vaulted cluster_secret variable
+export ANSIBLE_CONFIG=tests/plugins/inventory/git/ansible.cfg
+export ANSIBLE_VAULT_IDENTITY_LIST="dc1_cluster_secret@tests/plugins/inventory/git/avp_dc1_cluster_secret"
+
+# list inventory
+ansible-inventory -vvv -i tests/plugins/inventory/git/example1 --list --yaml
+
+# run playbook that will output vaulted cluster_secret variable
+ansible-playbook -vvv -i tests/plugins/inventory/git/example1 --limit kubernetes_master tests/plugins/inventory/git/debug_cluster_secret.yml
+```
+
+List inventory output:
+
+```sh
 ansible-inventory 2.10.9
-  config file = None
+  config file = /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/ansible.cfg
   configured module search path = ['/home/nkiraly/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
   ansible python module location = /home/nkiraly/.local/share/virtualenvs/cloud-platform-management-sy5ngW6F/lib/python3.8/site-packages/ansible
   executable location = /home/nkiraly/.local/share/virtualenvs/cloud-platform-management-sy5ngW6F/bin/ansible-inventory
   python version = 3.8.6 (default, Jan 27 2021, 15:42:20) [GCC 10.2.0]
-No config file found; using defaults
-Parsed /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/example.git.yml inventory source with ansible_collections.spatiumcepa.platform.plugins.inventory.git plugin
-ansible_collections.spatiumcepa.platform.plugins.inventory.git declined parsing /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/example_inventory as it did not pass its verify_file() method
-Parsed /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/example_inventory inventory source with ini plugin
-@all:
-  |--@include_test:
-  |  |--@abstract_test:
-  |  |  |--@db:
-  |  |  |  |--@primary_db:
-  |  |  |  |  |--@db1:
-  |  |  |  |--@replica_db:
-  |  |  |  |  |--@db2:
-  |  |  |  |  |  |--{var005db2 = mo}
-  |  |  |  |--{var004db = slo}
-  |  |  |--@web:
-  |  |  |  |--@web1:
-  |  |  |  |  |--{var003web1 = bap}
-  |  |  |  |--@web2:
-  |  |  |  |--{var002web = bim}
-  |  |  |--{var001customer = beep}
-  |  |--@example:
-  |  |  |--@kubernetes:
-  |  |  |  |--@kubernetes_agent:
-  |  |  |  |  |--10.20.1.19
-  |  |  |  |  |  |--{customer_name = nkiraly}
-  |  |  |  |  |  |--{include_var_one = 1}
-  |  |  |  |  |  |--{include_var_two = 2.0}
-  |  |  |  |  |  |--{kubernetes_cluster_node = True}
-  |  |  |  |--@kubernetes_master:
-  |  |  |  |  |--10.20.1.7
-  |  |  |  |  |  |--{customer_name = nkiraly}
-  |  |  |  |  |  |--{include_var_one = 1}
-  |  |  |  |  |  |--{include_var_two = 2.0}
-  |  |  |  |  |  |--{kubernetes_cluster_node = True}
-  |  |  |  |  |  |--{master_node = True}
-  |  |  |  |  |--10.20.1.8
-  |  |  |  |  |  |--{customer_name = nkiraly}
-  |  |  |  |  |  |--{include_var_one = 1}
-  |  |  |  |  |  |--{include_var_two = 2.0}
-  |  |  |  |  |  |--{kubernetes_cluster_node = True}
-  |  |  |  |  |  |--{master_10_20_1_8_only_var = tracey}
-  |  |  |  |  |  |--{master_node = True}
-  |  |  |  |  |--{master_node = True}
-  |  |  |  |--{kubernetes_cluster_node = True}
-  |  |  |--@other_static_host:
-  |  |  |  |--10.50.4.21
-  |  |  |  |  |--{customer_name = nkiraly}
-  |  |  |  |  |--{include_var_one = 1}
-  |  |  |  |  |--{include_var_two = 2.0}
-  |  |--@kubernetes:
-  |  |  |--@kubernetes_agent:
-  |  |  |  |--10.20.1.19
-  |  |  |  |  |--{customer_name = nkiraly}
-  |  |  |  |  |--{include_var_one = 1}
-  |  |  |  |  |--{include_var_two = 2.0}
-  |  |  |  |  |--{kubernetes_cluster_node = True}
-  |  |  |--@kubernetes_master:
-  |  |  |  |--10.20.1.7
-  |  |  |  |  |--{customer_name = nkiraly}
-  |  |  |  |  |--{include_var_one = 1}
-  |  |  |  |  |--{include_var_two = 2.0}
-  |  |  |  |  |--{kubernetes_cluster_node = True}
-  |  |  |  |  |--{master_node = True}
-  |  |  |  |--10.20.1.8
-  |  |  |  |  |--{customer_name = nkiraly}
-  |  |  |  |  |--{include_var_one = 1}
-  |  |  |  |  |--{include_var_two = 2.0}
-  |  |  |  |  |--{kubernetes_cluster_node = True}
-  |  |  |  |  |--{master_10_20_1_8_only_var = tracey}
-  |  |  |  |  |--{master_node = True}
-  |  |  |  |--{master_node = True}
-  |  |  |--{kubernetes_cluster_node = True}
-  |  |--@kubernetes_master:
-  |  |  |--10.20.1.7
-  |  |  |  |--{customer_name = nkiraly}
-  |  |  |  |--{include_var_one = 1}
-  |  |  |  |--{include_var_two = 2.0}
-  |  |  |  |--{kubernetes_cluster_node = True}
-  |  |  |  |--{master_node = True}
-  |  |  |--10.20.1.8
-  |  |  |  |--{customer_name = nkiraly}
-  |  |  |  |--{include_var_one = 1}
-  |  |  |  |--{include_var_two = 2.0}
-  |  |  |  |--{kubernetes_cluster_node = True}
-  |  |  |  |--{master_10_20_1_8_only_var = tracey}
-  |  |  |  |--{master_node = True}
-  |  |  |--{master_node = True}
-  |  |--{customer_name = nkiraly}
-  |  |--{include_var_one = 1}
-  |  |--{include_var_two = 2.0}
-  |--@ungrouped:
+Using /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/ansible.cfg as config file
+Parsed /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/example1/example1.git.yml inventory source with ansible_collections.spatiumcepa.platform.plugins.inventory.git plugin
+ansible_collections.spatiumcepa.platform.plugins.inventory.git declined parsing /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/example1/example1_inventory as it did not pass its verify_file() method
+Parsed /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/example1/example1_inventory inventory source with ini plugin
+all:
+  children:
+    example1:
+      children:
+        abstract1:
+          children:
+            db:
+              children:
+                primary_db:
+                  children:
+                    db1: {}
+                replica_db:
+                  children:
+                    db2: {}
+            web:
+              children:
+                web1: {}
+                web2: {}
+        datacenter1:
+          children:
+            kubernetes:
+              children:
+                kubernetes_agent:
+                  hosts:
+                    10.20.1.19:
+                      cluster_secret: &id001 !vault |
+                        $ANSIBLE_VAULT;1.2;AES256;dc1_cluster_secret
+                        32646364343663633161623932326438336231393264396531333539666464353862323130353932
+                        3030313762356432376331616337623531623266313734320a613230366130366562646264303938
+                        33656536656132313032353630663339323133306562396366306131376162626231633230633335
+                        6539663834636366650a323065366230653231376134323138356430376235313761636338663931
+                        3539
+                      common_var_one: 1
+                      common_var_two: 2.0
+                      customer_name: nkiraly
+                      kubernetes_cluster_node: true
+                kubernetes_master:
+                  hosts:
+                    10.20.1.7:
+                      cluster_secret: *id001
+                      common_var_one: 1
+                      common_var_two: 2.0
+                      customer_name: nkiraly
+                      kubernetes_cluster_node: true
+                      kubernetes_master_node: true
+                    10.20.1.8:
+                      cluster_secret: *id001
+                      common_var_one: 1
+                      common_var_two: 2.0
+                      customer_name: nkiraly
+                      kubernetes_cluster_node: true
+                      kubernetes_master_node: true
+                      master_10_20_1_8_only_var: tracey
+            other_static_host:
+              hosts:
+                10.50.4.21:
+                  common_var_one: 1
+                  common_var_two: 2.0
+                  customer_name: nkiraly
+                  special_var: 135711131719
+        kubernetes:
+          children:
+            kubernetes_agent:
+              hosts:
+                10.20.1.19: {}
+            kubernetes_master:
+              hosts:
+                10.20.1.7: {}
+                10.20.1.8: {}
+        kubernetes_master:
+          hosts:
+            10.20.1.7: {}
+            10.20.1.8: {}
+    ungrouped: {}
 ```
 
 ## Development
