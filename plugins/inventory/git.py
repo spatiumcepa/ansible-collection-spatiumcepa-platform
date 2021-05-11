@@ -20,7 +20,6 @@ from ansible.errors import AnsibleError, AnsibleParserError
 from ansible.module_utils.six import string_types
 from ansible.module_utils._text import to_native, to_text
 from ansible.module_utils.common._collections_compat import MutableMapping
-from ansible.parsing.dataloader import DataLoader
 from ansible.parsing.yaml.dumper import AnsibleDumper
 from ansible.plugins.inventory import BaseInventoryPlugin
 
@@ -241,8 +240,7 @@ class InventoryModule(BaseInventoryPlugin):  # TODO: implement Cacheable
 
     def _read_variable_file(self, variable_file_path):
         self.log(f"Reading variable file {variable_file_path}")
-        dl = DataLoader()
-        variable_tree = dl.load_from_file(variable_file_path)
+        variable_tree = self.loader.load_from_file(variable_file_path)
         return variable_tree
 
     def _build_inventory(self, inventory_file_path, inventory, parent, parent_name):

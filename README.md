@@ -2,7 +2,7 @@
 
 This repo contains the `spatiumcepa.platform` Ansible Collection which includes modules and plugins for platform operations.
 
-## Usage
+## Installation
 
 Specify the collection in your ansible requirements a la
 
@@ -27,7 +27,7 @@ ansible-doc -t inventory -l | grep spatium
 ansible-inventory -vvv --list
 ```
 
-Test shell output:
+Test collection shell output:
 
 ```sh
 $ ansible-doc -t inventory -l | grep spatium
@@ -44,20 +44,7 @@ Read abstract inventory example
 ansible-inventory -vvv -i tests/plugins/inventory/git/abstract1 --graph --vars
 ```
 
-Read test example1 inventory directory that defines static hosts and loads example1 variable and host definition which includes an inline vaulted variable
-And use debug module to list hostvars while limited to the kubernetes_master host group, of which host .8 is only defined in the example1 inventory yaml includes
-
-```sh
-# specify vault-id for vaulted cluster_secret variable
-export ANSIBLE_CONFIG=tests/plugins/inventory/git/ansible.cfg
-export ANSIBLE_VAULT_IDENTITY_LIST="dc1_cluster_secret@tests/plugins/inventory/git/avp_dc1_cluster_secret"
-
-# list inventory
-ansible-inventory -vvv -i tests/plugins/inventory/git/example1 --list --yaml
-
-# run playbook that will output vaulted cluster_secret variable
-ansible-playbook -vvv -i tests/plugins/inventory/git/example1 --limit kubernetes_master tests/plugins/inventory/git/debug_cluster_secret.yml
-```
+## Usage
 
 List inventory output:
 
@@ -99,11 +86,11 @@ all:
                     10.20.1.19:
                       cluster_secret: &id001 !vault |
                         $ANSIBLE_VAULT;1.2;AES256;dc1_cluster_secret
-                        32646364343663633161623932326438336231393264396531333539666464353862323130353932
-                        3030313762356432376331616337623531623266313734320a613230366130366562646264303938
-                        33656536656132313032353630663339323133306562396366306131376162626231633230633335
-                        6539663834636366650a323065366230653231376134323138356430376235313761636338663931
-                        3539
+                        36346430333133386364323633343436386537393138376161656361633833343636626136393437
+                        3362303061376561666261353836366537626530383132300a383262316636376666623337326237
+                        62396132326531653239313861636636306539356361383131323934353931306339393931613530
+                        3734633265333131610a643233626431616537306532633163633934626632623831356262386463
+                        6664
                       common_var_one: 1
                       common_var_two: 2.0
                       customer_name: nkiraly
@@ -146,6 +133,62 @@ all:
             10.20.1.7: {}
             10.20.1.8: {}
     ungrouped: {}
+```
+
+### Inventory Example
+
+Read test example1 inventory directory that defines static hosts and loads example1 variable and host definition which includes an inline vaulted variable
+And use debug module to list hostvars while limited to the kubernetes_master host group, of which host .8 is only defined in the example1 inventory yaml includes
+
+```sh
+# specify vault-id for vaulted cluster_secret variable
+export ANSIBLE_CONFIG=tests/plugins/inventory/git/ansible.cfg
+export ANSIBLE_VAULT_IDENTITY_LIST="dc1_cluster_secret@tests/plugins/inventory/git/avp_dc1_cluster_secret"
+
+# list inventory
+ansible-inventory -vvv -i tests/plugins/inventory/git/example1 --list --yaml
+
+# run playbook that will output vaulted cluster_secret variable
+ansible-playbook -vvv -i tests/plugins/inventory/git/example1 --limit kubernetes_master tests/plugins/inventory/git/debug_cluster_secret.yml
+```
+
+Run playbook output:
+
+```sh
+ansible-playbook 2.10.9
+  config file = /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/ansible.cfg
+  configured module search path = ['/home/nkiraly/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /home/nkiraly/.local/share/virtualenvs/cloud-platform-management-sy5ngW6F/lib/python3.8/site-packages/ansible
+  executable location = /home/nkiraly/.local/share/virtualenvs/cloud-platform-management-sy5ngW6F/bin/ansible-playbook
+  python version = 3.8.6 (default, Jan 27 2021, 15:42:20) [GCC 10.2.0]
+Using /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/ansible.cfg as config file
+Parsed /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/example1/example1.git.yml inventory source with ansible_collections.spatiumcepa.platform.plugins.inventory.git plugin
+ansible_collections.spatiumcepa.platform.plugins.inventory.git declined parsing /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/example1/example1_inventory as it did not pass its verify_file() method
+Parsed /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/example1/example1_inventory inventory source with ini plugin
+Skipping callback 'default', as we already have a stdout callback.
+Skipping callback 'minimal', as we already have a stdout callback.
+Skipping callback 'oneline', as we already have a stdout callback.
+
+PLAYBOOK: debug_cluster_secret.yml ***********************************************************************************************************************************************************
+1 plays in tests/plugins/inventory/git/debug_cluster_secret.yml
+
+PLAY [debug cluster secret] ******************************************************************************************************************************************************************
+META: ran handlers
+
+TASK [debug cluster secret] ******************************************************************************************************************************************************************
+task path: /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/debug_cluster_secret.yml:6
+ok: [10.20.1.8] => {
+    "cluster_secret": "dc0ne"
+}
+ok: [10.20.1.7] => {
+    "cluster_secret": "dc0ne"
+}
+META: ran handlers
+META: ran handlers
+
+PLAY RECAP ***********************************************************************************************************************************************************************************
+10.20.1.7                  : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+10.20.1.8                  : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
 
 ## Development
