@@ -36,3 +36,6 @@ logs/*
 .cache
 .molecule
 pytestdebug.log
+
+# Testing
+collections/

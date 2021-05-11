@@ -46,16 +46,42 @@ ansible-inventory -vvv -i tests/plugins/inventory/git/abstract1 --graph --vars
 
 ## Usage
 
+### Inventory Example
+
+Read test example1 inventory directory that defines static hosts and loads example1 variable and host definition which includes an inline vaulted variable
+And use debug module to list hostvars while limited to the kubernetes_master host group, of which host .8 is only defined in the example1 inventory yaml includes
+
+```sh
+cd ~/src/spatium-cepa/ansible-collection-spatiumcepa-platform
+pipenv install --python python3.8
+pipenv shell
+
+# specify example config and vault-id for vaulted cluster_secret variable
+export ANSIBLE_CONFIG=examples/ansible.cfg
+export ANSIBLE_VAULT_IDENTITY_LIST="dc1_cluster_secret@tests/plugins/inventory/git/avp_dc1_cluster_secret"
+
+# test collection by installing in local directory
+ansible-galaxy collection build --force
+rm -rf collections/ansible_collections/spatiumcepa/platform
+ansible-galaxy collection install spatiumcepa-platform-0.1.2.tar.gz -p ./collections
+
+# list inventory
+ansible-inventory -vvv -i tests/plugins/inventory/git/example1 --list --yaml
+
+# run playbook that will output vaulted cluster_secret variable
+ansible-playbook -vvv -i tests/plugins/inventory/git/example1 --limit kubernetes_master playbooks/inventory_git_example1_debug_cluster_secret.yml
+```
+
 List inventory output:
 
 ```sh
 ansible-inventory 2.10.9
-  config file = /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/ansible.cfg
+  config file = /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/ansible.cfg
   configured module search path = ['/home/nkiraly/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
-  ansible python module location = /home/nkiraly/.local/share/virtualenvs/cloud-platform-management-sy5ngW6F/lib/python3.8/site-packages/ansible
-  executable location = /home/nkiraly/.local/share/virtualenvs/cloud-platform-management-sy5ngW6F/bin/ansible-inventory
+  ansible python module location = /home/nkiraly/.local/share/virtualenvs/ansible-collection-spatiumcepa-platform-2rxB0Ia1/lib/python3.8/site-packages/ansible
+  executable location = /home/nkiraly/.local/share/virtualenvs/ansible-collection-spatiumcepa-platform-2rxB0Ia1/bin/ansible-inventory
   python version = 3.8.6 (default, Jan 27 2021, 15:42:20) [GCC 10.2.0]
-Using /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/ansible.cfg as config file
+Using /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/ansible.cfg as config file
 Parsed /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/example1/example1.git.yml inventory source with ansible_collections.spatiumcepa.platform.plugins.inventory.git plugin
 ansible_collections.spatiumcepa.platform.plugins.inventory.git declined parsing /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/example1/example1_inventory as it did not pass its verify_file() method
 Parsed /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/example1/example1_inventory inventory source with ini plugin
@@ -135,33 +161,16 @@ all:
     ungrouped: {}
 ```
 
-### Inventory Example
-
-Read test example1 inventory directory that defines static hosts and loads example1 variable and host definition which includes an inline vaulted variable
-And use debug module to list hostvars while limited to the kubernetes_master host group, of which host .8 is only defined in the example1 inventory yaml includes
-
-```sh
-# specify vault-id for vaulted cluster_secret variable
-export ANSIBLE_CONFIG=tests/plugins/inventory/git/ansible.cfg
-export ANSIBLE_VAULT_IDENTITY_LIST="dc1_cluster_secret@tests/plugins/inventory/git/avp_dc1_cluster_secret"
-
-# list inventory
-ansible-inventory -vvv -i tests/plugins/inventory/git/example1 --list --yaml
-
-# run playbook that will output vaulted cluster_secret variable
-ansible-playbook -vvv -i tests/plugins/inventory/git/example1 --limit kubernetes_master tests/plugins/inventory/git/debug_cluster_secret.yml
-```
-
 Run playbook output:
 
 ```sh
 ansible-playbook 2.10.9
-  config file = /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/ansible.cfg
+  config file = /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/ansible.cfg
   configured module search path = ['/home/nkiraly/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
-  ansible python module location = /home/nkiraly/.local/share/virtualenvs/cloud-platform-management-sy5ngW6F/lib/python3.8/site-packages/ansible
-  executable location = /home/nkiraly/.local/share/virtualenvs/cloud-platform-management-sy5ngW6F/bin/ansible-playbook
+  ansible python module location = /home/nkiraly/.local/share/virtualenvs/ansible-collection-spatiumcepa-platform-2rxB0Ia1/lib/python3.8/site-packages/ansible
+  executable location = /home/nkiraly/.local/share/virtualenvs/ansible-collection-spatiumcepa-platform-2rxB0Ia1/bin/ansible-playbook
   python version = 3.8.6 (default, Jan 27 2021, 15:42:20) [GCC 10.2.0]
-Using /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/ansible.cfg as config file
+Using /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/ansible.cfg as config file
 Parsed /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/example1/example1.git.yml inventory source with ansible_collections.spatiumcepa.platform.plugins.inventory.git plugin
 ansible_collections.spatiumcepa.platform.plugins.inventory.git declined parsing /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/example1/example1_inventory as it did not pass its verify_file() method
 Parsed /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/example1/example1_inventory inventory source with ini plugin
@@ -169,14 +178,14 @@ Skipping callback 'default', as we already have a stdout callback.
 Skipping callback 'minimal', as we already have a stdout callback.
 Skipping callback 'oneline', as we already have a stdout callback.
 
-PLAYBOOK: debug_cluster_secret.yml ***********************************************************************************************************************************************************
-1 plays in tests/plugins/inventory/git/debug_cluster_secret.yml
+PLAYBOOK: inventory_git_example1_debug_cluster_secret.yml ************************************************************************************************************************************
+1 plays in playbooks/inventory_git_example1_debug_cluster_secret.yml
 
 PLAY [debug cluster secret] ******************************************************************************************************************************************************************
 META: ran handlers
 
 TASK [debug cluster secret] ******************************************************************************************************************************************************************
-task path: /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/tests/plugins/inventory/git/debug_cluster_secret.yml:6
+task path: /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/playbooks/inventory_git_example1_debug_cluster_secret.yml:6
 ok: [10.20.1.8] => {
     "cluster_secret": "dc0ne"
 }
@@ -192,6 +201,62 @@ PLAY RECAP *********************************************************************
 ```
 
 ## Development
+
+Changes and improvements should be done in a python virtual environment based on the repository Pipfile.
+
+```sh
+cd ~/src/spatium-cepa/ansible-collection-spatiumcepa-platform
+pipenv install --dev --python python3.8
+pipenv shell
+```
+
+Then you can build and install the collection locally to run test plays
+
+```sh
+# specify example config and vault-id for vaulted cluster_secret variable
+export ANSIBLE_CONFIG=examples/ansible.cfg
+
+# test collection by installing in local directory
+ansible-galaxy collection build --force
+rm -rf collections/ansible_collections/spatiumcepa/platform
+ansible-galaxy collection install spatiumcepa-platform-0.1.2.tar.gz -p ./collections
+
+# make sure the git inventory plugin is available
+ansible-doc -t inventory -l | grep spatium
+# make sure it runs with an empty inventory scan
+ansible-inventory -vvv --list
+```
+
+```sh
+(ansible-collection-spatiumcepa-platform-2rxB0Ia1) nkiraly@galp5-lxw:~/src/spatium-cepa/ansible-collection-spatiumcepa-platform$ ansible-doc -t inventory -l | grep spatium
+spatiumcepa.platform.git             Clone and read git repo YAML files as ...
+
+(ansible-collection-spatiumcepa-platform-2rxB0Ia1) nkiraly@galp5-lxw:~/src/spatium-cepa/ansible-collection-spatiumcepa-platform$ ansible-inventory -vvv --list
+ansible-inventory 2.10.9
+  config file = /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/ansible.cfg
+  configured module search path = ['/home/nkiraly/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /home/nkiraly/.local/share/virtualenvs/ansible-collection-spatiumcepa-platform-2rxB0Ia1/lib/python3.8/site-packages/ansible
+  executable location = /home/nkiraly/.local/share/virtualenvs/ansible-collection-spatiumcepa-platform-2rxB0Ia1/bin/ansible-inventory
+  python version = 3.8.6 (default, Jan 27 2021, 15:42:20) [GCC 10.2.0]
+Using /home/nkiraly/src/spatium-cepa/ansible-collection-spatiumcepa-platform/ansible.cfg as config file
+Skipping due to inventory source not existing or not being readable by the current user
+ansible_collections.spatiumcepa.platform.plugins.inventory.git declined parsing /etc/ansible/hosts as it did not pass its verify_file() method
+Skipping due to inventory source not existing or not being readable by the current user
+ini declined parsing /etc/ansible/hosts as it did not pass its verify_file() method
+[WARNING]: No inventory was parsed, only implicit localhost is available
+{
+    "_meta": {
+        "hostvars": {}
+    },
+    "all": {
+        "children": [
+            "ungrouped"
+        ]
+    }
+}
+```
+
+## Testing in playbooks
 
 To streamline development testing, symlink this collection into your playbook virtual environment collections directory, such as:
 

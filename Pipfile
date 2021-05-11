@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+ansible = "==2.10.7"
+PyYAML = ">=5.3"
+gitdb2 = "<3,>=2.0.0"
+GitPython = "==2.1"
+git-url-parse = "==1.2"
+configparser = ">=4.0"
+
+[dev-packages]
+docker = "==5.0.0"
+molecule = "==3.3.0"
+
+[requires]
+python_version = "3.8"
