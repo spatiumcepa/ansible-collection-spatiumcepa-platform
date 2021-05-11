@@ -133,7 +133,6 @@ class InventoryModule(BaseInventoryPlugin):  # TODO: implement Cacheable
         self.delete_repo_cache = self.get_option('delete_repo_cache')
         self._current_user = getpass.getuser()
         self.git_repo_cache_dir = '/tmp/' + self._current_user + '-ansible-inventory-git-cache'
-        self.log(f"parse trace 1 git_repo_cache_dir={self.git_repo_cache_dir}")
         if self.get_option('git_repo_cache_dir') is not None:
             self.git_repo_cache_dir = self.get_option('git_repo_cache_dir')
         self.git_repo_cache_update_time_seconds = self.get_option('git_repo_cache_update_time_seconds')
