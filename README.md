@@ -11,7 +11,7 @@ roles: []
 
 collections:
   - name: git@github.com:spatium-cepa/ansible-collection-spatiumcepa-platform.git
-    version: 0.1.0
+    version: 0.1.2
     type: git
 ```
 
