@@ -1,6 +1,8 @@
 # Spatium Cepa Platform Collection
 
-This repo contains the `spatiumcepa.platform` Ansible Collection which includes modules and plugins for platform operations.
+![plugin inventory git workflow status](https://github.com/spatium-cepa/ansible-collection-spatiumcepa-platform/actions/workflows/plugin_inventory_git.yml/badge.svg)
+
+This repo contains the `spatiumcepa.platform` Ansible Collection platform engineers and operators.
 
 ## Installation
 
